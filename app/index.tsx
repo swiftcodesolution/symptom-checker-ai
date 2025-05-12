@@ -1,15 +1,35 @@
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
+import { Platform } from "react-native";
 
 export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+  const router = useRouter();
+  // const rootNavigation = useRootNavigationState();
+
+  useEffect(() => {
+    let timerId;
+
+    if (Platform.OS === "ios") {
+      timerId = setTimeout(() => {
+        router.replace("/onboarding/1");
+      }, 1);
+    } else {
+      timerId = setImmediate(() => {
+        router.replace("/onboarding/1");
+      });
+    }
+
+    // Cleanup to prevent memory leaks
+    return () => {
+      if (timerId) {
+        if (Platform.OS === "ios") {
+          clearTimeout(timerId);
+        } else {
+          clearImmediate(timerId);
+        }
+      }
+    };
+  }, [router]);
+
+  return null;
 }
